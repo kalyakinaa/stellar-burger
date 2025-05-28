@@ -1,45 +1,73 @@
-import { FC, useMemo } from 'react';
-import { TConstructorIngredient } from '@utils-types';
+import { FC, useMemo, useCallback } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import { useNavigate } from 'react-router-dom';
 import { BurgerConstructorUI } from '@ui';
+import {
+  clearConstructor,
+  orderBurger,
+  selectConstructorsItems,
+  selectConstructorsOrder,
+  selectConstructorsRequest
+} from '../../services/burgerConstructorSlice';
+import { getUser } from '../../services/userSlice';
+import { RequestStatus, TConstructorIngredient } from '@utils-types';
+import type { AppDispatch } from 'src/services/store';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
-  };
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const orderRequest = false;
+  // Селекторы
+  const user = useSelector(getUser);
+  const constructorItems = useSelector(selectConstructorsItems);
+  const orderModalData = useSelector(selectConstructorsOrder);
+  const isLoading =
+    useSelector(selectConstructorsRequest) === RequestStatus.Loading;
 
-  const orderModalData = null;
-
-  const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
-  };
-  const closeOrderModal = () => {};
+  // Расчет стоимости
+  const calculatePrice = useCallback((items: typeof constructorItems) => {
+    const bunCost = items.bun ? items.bun.price * 2 : 0;
+    const ingredientsCost = items.ingredients.reduce(
+      (sum, item) => sum + item.price,
+      0
+    );
+    return bunCost + ingredientsCost;
+  }, []);
 
   const price = useMemo(
-    () =>
-      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
-      constructorItems.ingredients.reduce(
-        (s: number, v: TConstructorIngredient) => s + v.price,
-        0
-      ),
-    [constructorItems]
+    () => calculatePrice(constructorItems),
+    [constructorItems, calculatePrice]
   );
 
-  return null;
+  // Обработчики событий
+  const handleOrderClick = useCallback(() => {
+    if (!constructorItems.bun || isLoading) return;
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    const ingredientIds = [
+      constructorItems.bun._id,
+      ...constructorItems.ingredients.map((item) => item._id)
+    ];
+
+    dispatch(orderBurger(ingredientIds));
+  }, [constructorItems, isLoading, user, navigate, dispatch]);
+
+  const handleCloseModal = useCallback(() => {
+    dispatch(clearConstructor());
+  }, [dispatch]);
 
   return (
     <BurgerConstructorUI
       price={price}
-      orderRequest={orderRequest}
+      orderRequest={isLoading}
       constructorItems={constructorItems}
       orderModalData={orderModalData}
-      onOrderClick={onOrderClick}
-      closeOrderModal={closeOrderModal}
+      onOrderClick={handleOrderClick}
+      closeOrderModal={handleCloseModal}
     />
   );
 };
