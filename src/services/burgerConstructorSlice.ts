@@ -1,4 +1,4 @@
-import { orderBurgerApi } from '@api';
+import { orderBurgerApi } from '../utils/burger-api';
 import {
   PayloadAction,
   createAsyncThunk,
@@ -10,9 +10,9 @@ import {
   TConstructorIngredient,
   TIngredient,
   TOrder
-} from '@utils-types';
+} from '../utils/types';
 
-interface IBurgerConstructorState {
+export interface IBurgerConstructorState {
   bun: TConstructorIngredient | null;
   ingredients: TConstructorIngredient[];
   requestStatus: RequestStatus;
