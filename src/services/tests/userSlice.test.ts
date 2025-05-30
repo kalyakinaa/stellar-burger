@@ -8,7 +8,7 @@ import {
   registerUser,
   updateUser,
   userActions,
-  userReducer,
+  userReducer
 } from '../userSlice';
 
 const mockUser = {
@@ -56,7 +56,7 @@ describe('Тесты для userSlice', () => {
           { ...initialState, data: mockUser },
           logoutUser.pending('')
         );
-        
+
         expect(state).toEqual({
           isAuthChecked: false,
           data: mockUser,
@@ -69,7 +69,7 @@ describe('Тесты для userSlice', () => {
           { ...initialState, data: mockUser },
           logoutUser.rejected(new Error('Error'), '')
         );
-        
+
         expect(state).toEqual({
           isAuthChecked: false,
           data: mockUser,
@@ -82,7 +82,7 @@ describe('Тесты для userSlice', () => {
           { ...initialState, data: mockUser },
           userActions.userLogout()
         );
-        
+
         expect(state).toEqual({
           isAuthChecked: false,
           data: null,
@@ -113,7 +113,7 @@ describe('Тесты для userSlice', () => {
           initialState,
           registerUser.fulfilled(mockUser, '', mockUser)
         );
-        
+
         expect(state).toEqual({
           isAuthChecked: false,
           data: mockUser,
@@ -144,7 +144,7 @@ describe('Тесты для userSlice', () => {
           initialState,
           loginUser.fulfilled(mockUser, '', mockLoginData)
         );
-        
+
         expect(state).toEqual({
           isAuthChecked: false,
           data: mockUser,
@@ -172,7 +172,7 @@ describe('Тесты для userSlice', () => {
           initialState,
           checkUserAuth.fulfilled(mockUser, '')
         );
-        
+
         expect(state).toEqual({
           isAuthChecked: false,
           data: mockUser,
@@ -203,7 +203,7 @@ describe('Тесты для userSlice', () => {
           initialState,
           updateUser.fulfilled(mockUserResponse, '', mockUpdatedUser)
         );
-        
+
         expect(state).toEqual({
           isAuthChecked: false,
           data: mockUser,

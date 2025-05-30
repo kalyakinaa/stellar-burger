@@ -19,14 +19,14 @@ describe('Тесты для orderSlice', () => {
   it('должен корректно обрабатывать pending состояние', () => {
     const action = getOrderByNumber.pending(requestId, arg);
     const nextState = orderReducer(initialState, action);
-    
+
     expect(nextState.status).toEqual(RequestStatus.Loading);
   });
 
   it('должен корректно обрабатывать rejected состояние', () => {
     const action = getOrderByNumber.rejected(error, requestId, arg);
     const nextState = orderReducer(initialState, action);
-    
+
     expect(nextState.status).toEqual(RequestStatus.Failed);
   });
 

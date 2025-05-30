@@ -1,10 +1,14 @@
 import { RequestStatus, TIngredient } from '../../utils/types';
-import { getIngredients, ingredientsReducer, initialState } from '../ingredientsSlice';
+import {
+  getIngredients,
+  ingredientsReducer,
+  initialState
+} from '../ingredientsSlice';
 
 const mockIngredients: TIngredient[] = [
   {
     _id: '1',
-    name: "Соус фирменный Space Sauce",
+    name: 'Соус фирменный Space Sauce',
     type: 'sause',
     proteins: 50,
     fat: 22,
@@ -35,7 +39,7 @@ describe('Тесты для ingredientsSlice', () => {
     it('должен возвращать initialState при неизвестном action', () => {
       const unknownAction = { type: 'UNKNOWN_ACTION' };
       const newState = ingredientsReducer(initialState, unknownAction as any);
-      
+
       expect(newState).toEqual(initialState);
     });
   });
@@ -43,10 +47,10 @@ describe('Тесты для ingredientsSlice', () => {
   describe('Обработка статусов запроса ингредиентов', () => {
     it('должен устанавливать статус "Loading" при начале загрузки', () => {
       const newState = ingredientsReducer(
-        initialState, 
+        initialState,
         getIngredients.pending('requestId')
       );
-      
+
       expect(newState.status).toBe(RequestStatus.Loading);
       expect(newState.ingredient).toEqual(initialState.ingredient);
     });
@@ -57,7 +61,7 @@ describe('Тесты для ingredientsSlice', () => {
         initialState,
         getIngredients.rejected(error, 'requestId')
       );
-      
+
       expect(newState.status).toBe(RequestStatus.Failed);
     });
 
@@ -66,7 +70,7 @@ describe('Тесты для ingredientsSlice', () => {
         initialState,
         getIngredients.fulfilled(mockIngredients, 'requestId')
       );
-      
+
       expect(newState.status).toBe(RequestStatus.Success);
       expect(newState.ingredient).toEqual(mockIngredients);
     });

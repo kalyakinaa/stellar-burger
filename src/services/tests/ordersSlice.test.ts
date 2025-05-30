@@ -27,7 +27,7 @@ describe('Тесты для ordersSlice редьюсера', () => {
     it('должен установить статус "Loading" при pending', () => {
       const action = getOrders.pending('test_request_id');
       const newState = ordersReducer(initialState, action);
-      
+
       expect(newState.status).toBe(RequestStatus.Loading);
     });
 
@@ -35,7 +35,7 @@ describe('Тесты для ordersSlice редьюсера', () => {
       const error = new Error('Ошибка запроса');
       const action = getOrders.rejected(error, 'test_request_id');
       const newState = ordersReducer(initialState, action);
-      
+
       expect(newState.status).toBe(RequestStatus.Failed);
     });
 
